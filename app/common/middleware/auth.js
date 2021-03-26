@@ -20,17 +20,4 @@ const verifyJwt = (tokenInput) => {
       // }
 };
 
-const permit = (...roles) => {
-  return (req, res, next) => {
-    console.log({ user: req.user });
-
-    if (roles.includes(req.user.role)) {
-      next();
-    } else {
-      res.status(403);
-      throw new Error("forbidden access");
-    }
-  };
-};
-
-module.exports = { generateJwt, verifyJwt, permit };
+module.exports = { generateJwt, verifyJwt };
