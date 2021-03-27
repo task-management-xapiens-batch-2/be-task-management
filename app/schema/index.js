@@ -1,5 +1,6 @@
 const { gql } = require("apollo-server-express");
 const { typeDefs: user } = require("./user");
+const { typeDefs: task } = require("./task");
 
 const root = gql`
   type Query {
@@ -10,7 +11,7 @@ const root = gql`
   }
 `;
 
-const typeDefs = [root, user];
+const typeDefs = [root, user, task];
 module.exports = {
   typeDefs,
 };

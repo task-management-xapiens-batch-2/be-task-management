@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       task.hasMany(models.note)
-      task.belongsTo(models.project)
-      task.belongsTo(models.user)
+      // task.belongsTo(models.project)
+      task.belongsTo(models.user,{foreignKey:"assignee"})
     }
   };
   task.init({
