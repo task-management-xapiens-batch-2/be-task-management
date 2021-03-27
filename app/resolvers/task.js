@@ -4,10 +4,12 @@ const resolvers = {
   Query: {
     async findAllTask(parent, args, { db }) {
       const data = await db.task.findAll({
-        include: db.user
+        include: [{
+          model:db.user,
+          where: {spv_id:4}
+        }]
       });
-      // console.log(db.payload.result.id);
-      console.log(data);
+      // console.log(data);
       return data;
     },
   },

@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     start_date: DataTypes.DATE,
     due_date: DataTypes.DATE,
     attachment: DataTypes.STRING,
-    status: DataTypes.ENUM("Draft","Submit","Approved","Return","Reject","Todo","Doing","Done"),
+    status: DataTypes.ENUM("draft","submit","approved","return","reject","todo","doing","done"),
     deletedAt: DataTypes.DATE
   }, {
     sequelize,

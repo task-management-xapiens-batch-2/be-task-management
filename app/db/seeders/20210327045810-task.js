@@ -10,7 +10,7 @@ const tasks = [...Array(2)].map((e) => {
     start_date: faker.date.recent(),
     due_date: faker.date.soon(),
     attachment: faker.internet.url(),
-    status: "Submit",
+    status: "submit",
     is_read: false,
     createdAt: faker.date.recent(),
     updatedAt: faker.date.recent(),
@@ -18,7 +18,7 @@ const tasks = [...Array(2)].map((e) => {
 });
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // await queryInterface.bulkInsert("tasks", tasks)
+    await queryInterface.bulkInsert("tasks", tasks)
     /**
      * Add seed commands here.
      *

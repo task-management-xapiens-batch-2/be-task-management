@@ -2,7 +2,7 @@ const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
     extend type Query {
-        findAllTask(id:Int): Task
+        findAllTask : [Task]
     }
 
     type Task{
@@ -16,6 +16,7 @@ const typeDefs = gql`
         attachment: String
         status: String
         is_read: String
+        user: User
     }
 
 `;
