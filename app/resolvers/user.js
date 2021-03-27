@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const { hashing } = require("./../common/helpers/hashPassword");
+const yup = require("yup");
 
 const resolvers = {
   Query: {
@@ -31,10 +32,9 @@ const resolvers = {
             [Op.or]: [{ username: args.username }, { email: args.email }],
           },
         });
-        // console.log(data[0] === undefined);
         if (data[0] === undefined) {
           const { salt, hash } = hashing(args.password);
-          return await db.user.create({
+          const dataCreate = await db.user.create({
             fullname: args.fullname,
             username: args.username,
             email: args.email,
@@ -43,8 +43,62 @@ const resolvers = {
             role: args.role,
             spv_id: args.spv_id,
           });
+          return dataCreate;
         } else {
           throw new Error("Email or username already exists");
+        }
+      } else {
+        throw new Error("Admin only");
+      }
+    },
+    async updateUser(parent, args, { db }) {
+      if (db.payload.result.role === "admin") {
+        const { salt, hash } = hashing(args.password);
+        const newData = {
+          fullname: args.fullname,
+          username: args.username,
+          email: args.email,
+          password: hash,
+          salt: salt,
+          role: args.role,
+          spv_id: args.spv_id,
+        };
+        const data = await db.user.findAll({
+          where: {
+            [Op.or]: [{ username: args.username }, { email: args.email }],
+          },
+        });
+        if (data[0] === undefined) {
+          const dataCreate = await db.user.update(newData, {
+            where: {
+              id: args.id,
+            },
+          });
+          // return dataCreate;
+          const dataBaru = await db.user.findOne({
+            where:{
+              id:args.id
+            }
+          })
+          return dataBaru
+        } else {
+          throw new Error("Email or username already exists");
+        }
+      } else {
+        throw new Error("Admin Only");
+      }
+    },
+
+    async deleteUser(parent, args, { db }) {
+      if (db.payload.result.role === "admin") {
+        if (db.payload.result.id === args.id) {
+          throw new Error("can't delete yourself");
+        } else {
+          return await db.user.destroy({
+            where: {
+              id: args.id,
+            },
+          });
         }
       } else {
         throw new Error("Admin only");
