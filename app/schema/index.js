@@ -1,5 +1,7 @@
 const { gql } = require("apollo-server-express");
 const { typeDefs: user } = require("./user");
+const { typeDefs: project} = require("./project")
+const { typeDefs: note} = require("./note")
 
 const root = gql`
   type Query {
@@ -10,7 +12,7 @@ const root = gql`
   }
 `;
 
-const typeDefs = [root, user];
+const typeDefs = [root, user, project, note];
 module.exports = {
   typeDefs,
 };
