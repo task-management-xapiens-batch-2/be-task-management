@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -6,7 +6,7 @@ module.exports = {
       fields: ['assignee'],
       type: 'foreign key',
       name: 'tasks_fkey_user_id',
-      references: { 
+      references: {
         table: 'users',
         field: 'id'
       },
@@ -14,7 +14,6 @@ module.exports = {
       onUpdate: 'cascade'
     });
     
-
     /**
      * Add altering commands here.
      *
@@ -24,11 +23,12 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
+    // await queryInterface.removeConstraint("tasks", "tasks_fkey_user_id");
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };

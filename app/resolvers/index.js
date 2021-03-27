@@ -1,9 +1,8 @@
 const lodash = require("lodash");
 const { resolvers: user } = require("./user");
-const { resolvers: project} = require("./project")
-const { resolvers: note} = require ("./note")
+const { resolvers: task } = require("./task");
 
-const resolvers = lodash.merge(user, project, note);
+const resolvers = lodash.merge(user,task);
 
 module.exports = {
   resolvers,
