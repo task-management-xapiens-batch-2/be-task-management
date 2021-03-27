@@ -12,7 +12,7 @@ const typeDefs = gql`
 
     extend type Mutation {
         createNote (
-            task_id : Int!
+            task_id : Int
             note : String
         ):Note
 
@@ -21,10 +21,6 @@ const typeDefs = gql`
             task_id : Int
             note : String
         ):Note
-
-        deleteNote (
-            id :Int!
-        )
     }
 `;
 

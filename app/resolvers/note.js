@@ -17,6 +17,31 @@ const resolvers = {
   },
 
   Mutation : {
+    async createNote(parent, args, {db}) {
+        const noteCreate = await db.note.create({
+            task_id: args.task_id,
+            note : args.note
+        });
+        return noteCreate;
+    },
+    async updateNote(parent, args, {db}) {
+        const upNote = {
+            id : args.id,
+            task_id : args.task_id,
+            note: args.note
+        };
+        const noteUpdate = await db.note(upNote, {
+            where : { id: args.id},
+        }) 
+        if (noteUpdate) {
+            const note = await db.note.findOne({
+                where : {id:args.id},
+            })
+            return note
+        } else {
+            throw new Error("Update Note not Found")
+        }
+    }
       
   }
 };
