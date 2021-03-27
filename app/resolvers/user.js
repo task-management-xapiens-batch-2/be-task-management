@@ -13,10 +13,18 @@ const resolvers = {
         throw new Error("Admin only");
       }
     },
+    // Bisa di ganti atau di tambah find by email atau username
+    async findUser(parent, args, { db }) {
+      return await db.user.findOne({
+        where: {
+          id: args.id,
+        },
+      });
+    },
   },
 
   Mutation: {
-    async createUser(parent, args, { db }) {
+    async registerUser(parent, args, { db }) {
       if (db.payload.result.role === "admin") {
         const data = await db.user.findAll({
           where: {
