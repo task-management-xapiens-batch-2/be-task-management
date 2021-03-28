@@ -2,8 +2,14 @@ const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
   extend type Query {
-    user: [User]
-    findUser(id: Int!): User
+    findAllUserAdmin: [User]
+    findAllUserSpv: [User]
+    findAllUserPlanner: [User]
+
+
+    findUserAdmin(id: Int!): User
+    findUserSpv(id: Int!): User
+    findUserPlanner(id: Int!): User
   }
 
   type User {
@@ -28,10 +34,10 @@ const typeDefs = gql`
     updateUser(
       id:Int
       fullname: String
-      username: String!
-      email: String!
-      password: String!
-      role: String!
+      username: String
+      email: String
+      password: String
+      role: String
       spv_id: Int
     ): User
     deleteUser(id: Int!): User

@@ -31,7 +31,16 @@ const typeDefs = gql`
       due_date: String
     ): Task
 
-    updateTask(
+    buttonStatusDraft(
+      project_id: Int
+      assignee: Int
+      title: String
+      description: String
+      start_date: String
+      due_date: String
+    ): Task
+
+    updateTaskReturn(
       id: Int
       project_id: Int
       assignee: Int
@@ -39,12 +48,25 @@ const typeDefs = gql`
       description: String
       start_date: String
       due_date: String
-      attachment: String
       status: String
-      is_read: String
     ): Task
 
-    updateApproval(id: Int, status: String): Task
+    updateTaskDraft(
+      id: Int
+      project_id: Int
+      assignee: Int
+      title: String
+      description: String
+      start_date: String
+      due_date: String
+      status: String
+    ): Task
+
+    updateStatusTaskAdmin(id: Int, status: String): Task
+    updateStatusTaskSpv(id: Int, status: String): Task
+    updateStatusTaskPlanner(id: Int, status: String): Task
+    updateStatusTaskWorker(id: Int, status: String): Task
+
     updateIsRead(id: Int, is_read: String): Task
 
     deleteTask(id: Int): Task
