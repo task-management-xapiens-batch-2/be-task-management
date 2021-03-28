@@ -1,8 +1,9 @@
 const { gql } = require("apollo-server-express");
 const typeDefs = gql`
   extend type Query {
-    project: [Project]
-    projectById(id: Int): Project
+    findAllproject: [Project]
+    findOneProjectById(id : Int!) : Project
+    projectByUserId: [Project]
   }
 
   type Project {

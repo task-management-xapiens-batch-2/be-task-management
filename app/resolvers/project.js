@@ -1,41 +1,70 @@
-const { result } = require("lodash");
-
 const resolvers = {
   Query: {
-    async project(parent, _, { db }) {
-      if (db.payload.result.role === "planner" ||db.payload.result.role === "admin"){
-      return await db.project.findAll();
-    }
-  },
-    async projectById(parent, args, { db }) {
-      db.payload.result.role === "planner" ||db.payload.result.role === "admin"
-      return await db.project.findOne({
-        where: {
-          id: args.id,
-        },
-      });
+    async findAllproject(parent, _, { db }) {
+      if (db.payload.result.role === "admin") {
+        return await db.project.findAll();
+      } else {
+        throw new Error("Access Denied");
+      }
+    },
+    async projectByUserId(parent, args, { db }) {
+      const idCreate = db.payload.result.id;
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
+        return await db.project.findAll({
+          where: {
+            created_by: idCreate,
+          },
+        });
+      } else {
+        throw new Error("Access Denied");
+      }
+    },
+
+    async findOneProjectById(parent, args, { db }) {
+      const idCreate = db.payload.result.id;
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
+        return await db.project.findOne({
+          where: {
+            id: args.id,
+            created_by: idCreate,
+          },
+        });
+      } else {
+        throw new Error("Access Denied");
+      }
     },
   },
 
   Mutation: {
     async createProject(parent, args, { db }) {
-      if (db.payload.result.role === "planner" ||db.payload.result.role === "admin") {
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
         // console.log(db.payload.result.id)
-        const idCreate = db.payload.result.id
+        const idCreate = db.payload.result.id;
         const projectCreate = await db.project.create({
           created_by: idCreate,
           title: args.title,
           description: args.description,
         });
         return projectCreate;
-      }
-      else {
+      } else {
         throw new Error("Access Denied");
       }
     },
 
     async updateProject(parent, args, { db }) {
-      if (db.payload.result.role === "planner" ||db.payload.result.role === "admin") {
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
         const upProject = {
           id: args.id,
           created_by: db.payload.result.id,
@@ -54,16 +83,18 @@ const resolvers = {
         } else {
           throw new Error("Updated Project Not Found");
         }
-      }
-      else {
+      } else {
         throw new Error("Access Denied");
       }
     },
 
     async deleteProject(parent, args, { db }) {
-      if (db.payload.result.role === "planner" ||db.payload.result.role === "admin") {
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
         const delProject = await db.project.destroy({
-          where: { id: args.id },
+          where: { id: args.id, created_by: db.payload.result.id },
         });
 
         if (delProject) {

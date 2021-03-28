@@ -1,7 +1,8 @@
 const { gql } = require("apollo-server-express");
 const typeDefs = gql`
     extend type Query {
-        note : [Note]
+        findAllNote : [Note]
+        noteByTask : Note
     }
 
     type Note {
@@ -21,6 +22,8 @@ const typeDefs = gql`
             task_id : Int
             note : String
         ):Note
+
+        deleteNote (id: Int!) :Note
     }
 `;
 

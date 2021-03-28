@@ -1,47 +1,85 @@
-const note = require("../db/models/note");
-const task = require("../db/models/task");
-
 const resolvers = {
   Query: {
-    async note(parent, _, { db }) {
-      return await db.note.findAll();
+    async findAllNote(parent, _, { db }) {
+      if (db.payload.result.role === "admin") {
+        return await db.note.findAll();
+      } else {
+        throw new Error("Access Denied");
+      }
     },
 
-    async notebyTask(parent, args, { db }) {
-      return await db.note.findOne({
-        where: {
-          id: args.task.id,
-        },
-      });
+    async noteByTask(parent, args, { db }) {
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
+        return await db.note.findOne({
+          where: {
+            id: args.task.id,
+          },
+        });
+      } else {
+        throw new Error("Access Denied");
+      }
     },
   },
 
-  Mutation : {
-    async createNote(parent, args, {db}) {
+  Mutation: {
+    async createNote(parent, args, { db }) {
+      if (db.payload.result.role === "supervisor") {
         const noteCreate = await db.note.create({
-            task_id: args.task_id,
-            note : args.note
+          task_id: args.task_id,
+          note: args.note,
         });
         return noteCreate;
+      } else {
+        throw new Error("Access Denied");
+      }
     },
-    async updateNote(parent, args, {db}) {
+
+    async updateNote(parent, args, { db }) {
+      if (db.payload.result.role === "supervisor") {
         const upNote = {
-            id : args.id,
-            task_id : args.task_id,
-            note: args.note
+          id: args.id,
+          task_id: args.task_id,
+          note: args.note,
         };
         const noteUpdate = await db.note(upNote, {
-            where : { id: args.id},
-        }) 
+          where: { id: args.id },
+        });
         if (noteUpdate) {
-            const note = await db.note.findOne({
-                where : {id:args.id},
-            })
-            return note
+          const note = await db.note.findOne({
+            where: { id: args.id },
+          });
+          return note;
         } else {
-            throw new Error("Update Note not Found")
+          throw new Error("Update Note not Found");
         }
-    }
-      
-  }
+      } else {
+        throw new Error("Access Denied");
+      }
+    },
+
+    async deleteNote(parent, args, { db }) {
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
+        const delNote = await db.note.destroy({
+          where: { id: args.id},
+        });
+
+        if (delNote) {
+          return {
+            message: "Deleted Done",
+          };
+        } else {
+          throw new Error("Note Not Found");
+        }
+      }
+    },
+  },
+};
+module.exports = {
+  resolvers,
 };
