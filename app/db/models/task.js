@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       task.hasMany(models.note)
-      // task.belongsTo(models.project)
+      task.belongsTo(models.project,{foreignKey:"project_id"})
       task.belongsTo(models.user,{foreignKey:"assignee"})
     }
   };
@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     due_date: DataTypes.DATE,
     attachment: DataTypes.STRING,
     status: DataTypes.ENUM("draft","submit","approved","return","reject","todo","doing","done"),
-    deletedAt: DataTypes.DATE
+    deletedAt: DataTypes.DATE,
+    is_read:DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'task',
