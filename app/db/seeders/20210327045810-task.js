@@ -18,7 +18,7 @@ const tasks = [...Array(2)].map((e) => {
 });
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert("tasks", tasks)
+    // await queryInterface.bulkInsert("tasks", tasks)
     /**
      * Add seed commands here.
      *

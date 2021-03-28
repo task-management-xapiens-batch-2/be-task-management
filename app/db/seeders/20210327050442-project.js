@@ -2,8 +2,8 @@
 const faker = require("faker");
 const project = [...Array(3)].map((e)=>{
   return {
-    created_by:2,
-    title: faker.lorem.text(),
+    created_by:15,
+    title: faker.lorem.words(),
     description: faker.lorem.sentence(),
     is_complete: false,
     createdAt: faker.date.recent(),
