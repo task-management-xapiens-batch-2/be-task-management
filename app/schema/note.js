@@ -2,7 +2,7 @@ const { gql } = require("apollo-server-express");
 const typeDefs = gql`
     extend type Query {
         findAllNote : [Note]
-        noteByTask : Note
+        noteByTask(id: Int) : Note
     }
 
     type Note {

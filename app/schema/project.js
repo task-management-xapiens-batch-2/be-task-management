@@ -23,6 +23,8 @@ const typeDefs = gql`
     ): Project
 
     deleteProject(id: Int!): Project
+
+    IsComplete(id: Int, is_complete: String): Project
   }
 `;
 module.exports = {

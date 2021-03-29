@@ -15,7 +15,7 @@ const resolvers = {
       ) {
         return await db.note.findOne({
           where: {
-            id: args.task.id,
+            id: args.id,
           },
         });
       } else {
