@@ -7,6 +7,13 @@ const {
   DATABASE_HOST,
   DATABASE_PORT
 } = process.env
+const {
+  HEROKU_DATABASE,
+  HEROKU_DATABASE_USER,
+  HEROKU_DATABASE_PASSWORD = null,
+  HEROKU_DATABASE_HOST,
+  HEROKU_DATABASE_PORT
+} = process.env
 
 module.exports = {
   development: {
