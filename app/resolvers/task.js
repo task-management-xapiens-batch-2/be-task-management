@@ -291,7 +291,7 @@ const resolvers = {
           };
           const dataWorker = await db.task.update(newData, {
             where: {
-              assignee: args.id,
+              id: args.id,
             },
           });
           return await db.task.findOne({
