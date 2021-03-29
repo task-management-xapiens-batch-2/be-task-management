@@ -48,39 +48,39 @@ class AuthController {
     }
   }
 
-  // static async register(req, res, next) {
-  //   try {
-  //     const dataEmail = await user.findOne({
-  //       where: {
-  //         email: req.body.email,
-  //       },
-  //     });
-  //     if (dataEmail) {
-  //       return baseResponse({
-  //         success: false,
-  //         message: "Please use different email address",
-  //       })(res, 200);
-  //     }
+  static async register(req, res, next) {
+    try {
+      const dataEmail = await user.findOne({
+        where: {
+          email: req.body.email,
+        },
+      });
+      if (dataEmail) {
+        return baseResponse({
+          success: false,
+          message: "Please use different email address",
+        })(res, 200);
+      }
 
-  //     const { salt, hash } = hashing(req.body.password);
+      const { salt, hash } = hashing(req.body.password);
 
-  //     const data = await user.create({
-  //       fullname: req.body.fullname,
-  //       username: req.body.username,
-  //       email: req.body.email,
-  //       password: hash,
-  //       salt: salt,
-  //       role: req.body.role,
-  //       spv_id: req.body.spv_id,
-  //     });
-  //     return baseResponse({
-  //       message: "user registered",
-  //       data: data,
-  //     })(res, 201);
-  //   } catch (error) {
-  //     res.status(500);
-  //     next(error);
-  //   }
-  // }
+      const data = await user.create({
+        fullname: req.body.fullname,
+        username: req.body.username,
+        email: req.body.email,
+        password: hash,
+        salt: salt,
+        role: req.body.role,
+        spv_id: req.body.spv_id,
+      });
+      return baseResponse({
+        message: "user registered",
+        data: data,
+      })(res, 201);
+    } catch (error) {
+      res.status(500);
+      next(error);
+    }
+  }
 }
 module.exports = AuthController;
