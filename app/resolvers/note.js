@@ -11,7 +11,8 @@ const resolvers = {
     async noteByTask(parent, args, { db }) {
       if (
         db.payload.result.role === "planner" ||
-        db.payload.result.role === "admin"
+        db.payload.result.role === "admin" ||
+        db.payload.result.role === "supervisor"
       ) {
         return await db.note.findOne({
           where: {
@@ -44,7 +45,7 @@ const resolvers = {
           task_id: args.task_id,
           note: args.note,
         };
-        const noteUpdate = await db.note(upNote, {
+        const noteUpdate = await db.note.update(upNote, {
           where: { id: args.id },
         });
         if (noteUpdate) {
