@@ -109,7 +109,7 @@ const resolvers = {
     async IsComplete(parent, args, { db }) {
       if (db.payload.result.role === "planner") {
         const newdata = {
-          is_read: true,
+          is_complete: true,
         };
         await db.project.update(newdata, {
           where: {
