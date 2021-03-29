@@ -74,6 +74,7 @@ const resolvers = {
         return await db.task.findAll({
           where: {
             assignee: db.payload.result.id,
+            status:["Approved","Todo","Doing","Done"]
           },
         });
       } else {
