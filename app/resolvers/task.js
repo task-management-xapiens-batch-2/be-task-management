@@ -1,9 +1,10 @@
 const { argsToArgsConfig } = require("graphql/type/definition");
+const { sumBy } = require("lodash");
 
 const resolvers = {
   Query: {
     // For supervisor
-    async findAllTask(parent, args, { db }) {
+    async findAllTaskSpv(parent, args, { db }) {
       if (db.payload.result.role === "admin") {
         return await db.task.findAll();
       } else if (db.payload.result.role === "supervisor") {
@@ -40,8 +41,20 @@ const resolvers = {
         throw new Error("you are not allowed");
       }
     },
-    // Find Task Planner Reject
-    // Find Task Planner Return
+
+    async findAllTaskWorker(parent, _, { db }) {
+      if (db.payload.result.role === "admin") {
+        return await db.task.findAll();
+      } else if (db.payload.result.role === "planner") {
+        return await db.task.findAll({
+          where: {
+            assignee: db.payload.result.id,
+          },
+        });
+      } else {
+        throw new Error("you are not allowed");
+      }
+    },
 
     async findTaskReturn(parent, _, { db }) {
       if (db.payload.result.role === "admin") {
@@ -105,9 +118,61 @@ const resolvers = {
       }
     },
 
-    // Approved , Return, Reject with Note or Without Note
-    // Karena di frontEnd wajib memasukan Note jadi nanti di tambahkan create note
+    // Update Status Spv With Note
     async updateStatusTaskSpv(parent, args, { db }) {
+      if (
+        db.payload.result.role === "supervisor" ||
+        db.payload.result.role === "admin"
+      ) {
+        const newStatus = {
+          status: args.status,
+        };
+        const dataTask = await db.task.findOne({
+          include: [
+            {
+              model: db.user,
+              where: { spv_id: db.payload.result.id },
+            },
+          ],
+          where: {
+            id: args.id,
+          },
+        });
+
+        const data = await db.task.update(newStatus, {
+          include: [
+            {
+              model: db.user,
+              where: { spv_id: db.payload.result.id },
+            },
+          ],
+          where: {
+            id: args.id,
+          },
+        });
+        // console.log(dataTask.dataValues.id);
+        const dataNote = await db.note.create({
+          task_id: dataTask.dataValues.id,
+          note: args.note
+        });
+        return await db.task.findOne({
+          include: [
+            {
+              model: db.user,
+              where: { spv_id: db.payload.result.id },
+            },
+          ],
+          where: {
+            id: args.id,
+          },
+        });
+      } else {
+        throw new Error("you are not allowed");
+      }
+    },
+
+    // Update Status Spv Without Note
+    async updateStatusTaskSpvApprove(parent, args, { db }) {
       if (
         db.payload.result.role === "supervisor" ||
         db.payload.result.role === "admin"
@@ -142,6 +207,7 @@ const resolvers = {
       }
     },
 
+    // Update Status Task Planner 
     async updateStatusTaskPlanner(parent, args, { db }) {
       if (
         db.payload.result.role === "planner" ||
@@ -184,6 +250,7 @@ const resolvers = {
       }
     },
 
+    // Update Status Task Worker
     async updateStatusTaskWorker(parent, args, { db }) {
       if (condition) {
       }
@@ -210,7 +277,7 @@ const resolvers = {
       }
     },
 
-    // planner membuat task
+    // Planner membuat Task baru
     async createTask(parent, args, { db }) {
       if (
         db.payload.result.role === "admin" ||
@@ -233,6 +300,7 @@ const resolvers = {
       }
     },
 
+    // Planner Task status to Draft
     async buttonStatusDraft(parent, args, { db }) {
       if (
         db.payload.result.role === "admin" ||
@@ -246,7 +314,7 @@ const resolvers = {
           start_date: args.start_date,
           due_date: args.due_date,
           attachment: "",
-          status: "Submit",
+          status: "Draft",
           is_read: false,
         });
         return data;
@@ -257,6 +325,7 @@ const resolvers = {
 
     // Update Task (Return) or masih status draft
     // Dan ketika di kirim ulang statusnya berubah menjadi submit (Kirim Ulang)
+    // Update Task Return to SPV with status submit again
     async updateTaskReturn(parent, args, { db }) {
       if (
         db.payload.result.role === "admin" ||
