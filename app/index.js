@@ -36,7 +36,7 @@ server.applyMiddleware({ app });
 
 app.get("/", async (req, res) => {
   return res.json({
-    message: "welcome graphql",
+    message: "welcome graphql local",
   });
 });
 

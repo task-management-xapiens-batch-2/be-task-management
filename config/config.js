@@ -8,6 +8,7 @@ const {
   DATABASE_PORT
 } = process.env
 
+
 module.exports = {
   development: {
     username: DATABASE_USER,
@@ -19,11 +20,11 @@ module.exports = {
     operatorsAliases: 0
   },
   production: {
-    username: process.env.DB_HEROKU_USERNAME,
-    password: process.env.DB_HEROKU_PASSWORD,
-    database: process.env.DB_HEROKU_NAME,
-    host: process.env.DB_HEROKU_HOST,
-    port: process.env.DB_HEROKU_PORT,
+    username: HEROKU_DATABASE_USER,
+    password: HEROKU_DATABASE_PASSWORD,
+    database: HEROKU_DATABASE,
+    host: HEROKU_DATABASE_HOST,
+    port: HEROKU_DATABASE_PORT,
     dialect: 'postgres',
     operatorsAliases: 0
   }
