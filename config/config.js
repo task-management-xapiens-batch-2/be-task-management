@@ -19,11 +19,11 @@ module.exports = {
     operatorsAliases: 0
   },
   production: {
-    username: DATABASE_USER,
-    password: DATABASE_PASSWORD,
-    database: DATABASE,
-    host: DATABASE_HOST,
-    port: DATABASE_PORT,
+    username: process.env.DB_HEROKU_USERNAME,
+    password: process.env.DB_HEROKU_PASSWORD,
+    database: process.env.DB_HEROKU_NAME,
+    host: process.env.DB_HEROKU_HOST,
+    port: process.env.DB_HEROKU_PORT,
     dialect: 'postgres',
     operatorsAliases: 0
   }
