@@ -74,7 +74,7 @@ const resolvers = {
         return await db.task.findAll({
           where: {
             assignee: db.payload.result.id,
-            status:["Approved","Todo","Doing","Done"]
+            status: ["Approved", "Todo", "Doing", "Done"],
           },
         });
       } else {
@@ -278,28 +278,28 @@ const resolvers = {
 
     // Update Status Task Worker
     async updateStatusTaskWorker(parent, args, { db }) {
-      if (condition) {
-      }
-      // Status Todo Doing Done
-      const findData = await db.task.findAll({
-        where: {
-          assignee: db.payload.result.id,
-        },
-      });
-      if (finddata[0] !== undefined) {
-        const newData = {
-          status: args.status,
-        };
-        const dataWorker = await db.task.update(newData, {
+      if (db.payload.result.role === "worker") {
+        // Status Todo Doing Done
+        const findData = await db.task.findAll({
           where: {
-            assignee: args.id,
+            assignee: db.payload.result.id,
           },
         });
-        return await db.task.findOne({
-          where: {
-            assignee: args.id,
-          },
-        });
+        if (finddata[0] !== undefined) {
+          const newData = {
+            status: args.status,
+          };
+          const dataWorker = await db.task.update(newData, {
+            where: {
+              assignee: args.id,
+            },
+          });
+          return await db.task.findOne({
+            where: {
+              assignee: args.id,
+            },
+          });
+        }
       }
     },
 
