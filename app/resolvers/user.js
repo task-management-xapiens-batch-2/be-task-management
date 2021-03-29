@@ -158,6 +158,39 @@ const resolvers = {
       }
     },
 
+    async updatePassword(parent, args, { db }) {
+      if (db.payload.result.role === "admin") {
+        const { salt, hash } = hashing(args.password);
+        const newData = {
+          password: hash,
+          salt: salt,
+        };
+        const data = await db.user.findAll({
+          where: {
+            id: args.id,
+          },
+        });
+        if (data[0] !== undefined) {
+          const dataCreate = await db.user.update(newData, {
+            where: {
+              id: args.id,
+            },
+          });
+          // return dataCreate;
+          const dataBaru = await db.user.findOne({
+            where: {
+              id: args.id,
+            },
+          });
+          return dataBaru;
+        } else {
+          throw new Error("Data doesn't exist");
+        }
+      } else {
+        throw new Error("Admin Only");
+      }
+    },
+
     async deleteUser(parent, args, { db }) {
       if (db.payload.result.role === "admin") {
         if (db.payload.result.id === args.id) {

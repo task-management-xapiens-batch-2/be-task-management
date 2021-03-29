@@ -21,6 +21,25 @@ const resolvers = {
       }
     },
 
+    async findOneTaskSpv(parent,args,{db}){
+      if (db.payload.result.role === "supervisor") {
+        return await db.task.findOne({
+          include: [
+            {
+              model: db.user,
+              where: { spv_id: db.payload.result.id },
+            },
+            {
+              model:db.note
+            }
+          ],
+          where:{
+            id: args.id
+          }
+        });
+      }
+    },
+
     // Find Task for ADMIN,SPV,Planner,Worker for Detail with Note(For Planner)
 
     // ADMIN DAN PLANNER IF NYA DIPISAH

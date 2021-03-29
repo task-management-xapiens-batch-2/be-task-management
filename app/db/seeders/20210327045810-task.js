@@ -1,16 +1,16 @@
 "use strict";
 const faker = require("faker");
 
-const tasks = [...Array(2)].map((e) => {
+const tasks = [...Array(4)].map((e) => {
   return {
-    assignee: 5,
-    project_id:3,
+    assignee: faker.random.number({min:17,max:20}),
+    project_id:faker.random.number({min:10,max:12}),
     title: faker.lorem.text(),
     description: faker.lorem.lines(),
     start_date: faker.date.recent(),
     due_date: faker.date.soon(),
     attachment: faker.internet.url(),
-    status: "submit",
+    status: "Submit",
     is_read: false,
     createdAt: faker.date.recent(),
     updatedAt: faker.date.recent(),
