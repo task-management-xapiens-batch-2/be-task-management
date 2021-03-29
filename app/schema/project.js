@@ -11,6 +11,7 @@ const typeDefs = gql`
     created_by: Int
     title: String
     description: String
+    is_complete: String
   }
 
   extend type Mutation {
@@ -22,6 +23,7 @@ const typeDefs = gql`
       description: String
     ): Project
 
+    updateIsCompleted(id:Int): Project
     deleteProject(id: Int!): Project
 
     IsComplete(id: Int, is_complete: String): Project

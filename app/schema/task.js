@@ -2,10 +2,13 @@ const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
   extend type Query {
-    findAllTask: [Task]
+    findAllTaskSpv: [Task]
     findAllTaskPlanner: [Task]
+    findAllTaskWorker: [Task]
     findTaskReturn: [Task]
     findTaskReject: [Task]
+
+    findOneTaskSpv(id:Int): Task
   }
 
   type Task {
@@ -19,6 +22,7 @@ const typeDefs = gql`
     attachment: String
     status: String
     is_read: String
+    notes: [Note]
   }
 
   extend type Mutation {
@@ -48,7 +52,6 @@ const typeDefs = gql`
       description: String
       start_date: String
       due_date: String
-      status: String
     ): Task
 
     updateTaskDraft(
@@ -59,16 +62,16 @@ const typeDefs = gql`
       description: String
       start_date: String
       due_date: String
-      status: String
     ): Task
 
     updateStatusTaskAdmin(id: Int, status: String): Task
-    updateStatusTaskSpv(id: Int, status: String): Task
+    updateStatusTaskSpv(id:Int,status: String, note: String): Task
+    updateStatusTaskSpvApprove(id:Int,status: String): Task
+
     updateStatusTaskPlanner(id: Int, status: String): Task
     updateStatusTaskWorker(id: Int, status: String): Task
 
     updateIsRead(id: Int, is_read: String): Task
-
     deleteTask(id: Int): Task
   }
 `;

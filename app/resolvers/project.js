@@ -42,6 +42,23 @@ const resolvers = {
   },
 
   Mutation: {
+    async updateIsCompleted(parent, args, { db }) {
+      if (
+        db.payload.result.role === "planner" ||
+        db.payload.result.role === "admin"
+      ) {
+        const dataComplete = {
+          is_complete: true,
+        };
+        const data = await db.project.update(dataComplete, {
+          where: {
+            id: args.id,
+            created_by: db.payload.result.id,
+          },
+        });
+      }
+    },
+
     async createProject(parent, args, { db }) {
       if (
         db.payload.result.role === "planner" ||
@@ -53,6 +70,7 @@ const resolvers = {
           created_by: idCreate,
           title: args.title,
           description: args.description,
+          is_complete: false,
         });
         return projectCreate;
       } else {
@@ -67,13 +85,15 @@ const resolvers = {
       ) {
         const upProject = {
           id: args.id,
-          created_by: db.payload.result.id,
           title: args.title,
           description: args.description,
         };
 
         const projectUpdate = await db.project.update(upProject, {
-          where: { id: args.id },
+          where: {
+            id: args.id,
+            created_by: db.payload.result.id,
+          },
         });
         if (projectUpdate[0]) {
           const project = await db.project.findOne({
@@ -94,7 +114,10 @@ const resolvers = {
         db.payload.result.role === "admin"
       ) {
         const delProject = await db.project.destroy({
-          where: { id: args.id, created_by: db.payload.result.id },
+          where: {
+            id: args.id,
+            created_by: db.payload.result.id,
+          },
         });
 
         if (delProject) {
