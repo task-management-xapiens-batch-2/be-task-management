@@ -6,7 +6,6 @@ const typeDefs = gql`
     findAllUserSpv: [User]
     findAllUserPlanner: [User]
 
-
     findUserAdmin(id: Int!): User
     findUserSpv(id: Int!): User
     findUserPlanner(id: Int!): User
@@ -17,6 +16,7 @@ const typeDefs = gql`
     fullname: String
     username: String
     email: String
+    password: String
     role: String
     spv_id: Int
   }
@@ -32,7 +32,7 @@ const typeDefs = gql`
     ): User
 
     updateUser(
-      id:Int
+      id: Int
       fullname: String
       username: String
       email: String
@@ -40,6 +40,8 @@ const typeDefs = gql`
       role: String
       spv_id: Int
     ): User
+
+    updatePassword(id: Int, password: String): User
     deleteUser(id: Int!): User
   }
 `;

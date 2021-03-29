@@ -2,7 +2,7 @@
 const faker = require("faker");
 const project = [...Array(3)].map((e)=>{
   return {
-    created_by:15,
+    created_by: faker.random.number({min:15,max:16}),
     title: faker.lorem.words(),
     description: faker.lorem.sentence(),
     is_complete: false,
