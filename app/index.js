@@ -46,15 +46,34 @@ app.get("/", async (req, res) => {
   });
 });
 
+app.patch(
+  "/upload/attachment/:id",
+  uploadAttachment.single("file"),
+  async (req, res) => {
+    try {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      const newData = {
+        attachment: result.url,
+      };
+      const data = await db.task.update(newData, {
+        where: {
+          id: req.params.id,
+        },
+      });
+      if (data) {
+        res.json({ message: "berhasil" });
+      }
+    } catch (error) {
+      res.json({
+        message: error,
+      });
+    }
+  }
+);
+
 app.use("/api", routerIndex);
 app.use(router);
 
-// cors_proxy
-//   .createServer({
-//     originWhitelist: [], // Allow all origins
-//     requireHeader: ["origin", "x-requested-with"],
-//     removeHeaders: ["cookie", "cookie2"],
-//   })
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
