@@ -4,23 +4,92 @@ const yup = require("yup");
 
 const resolvers = {
   Query: {
-    async user(parent, _, { db }) {
+    // Find All User
+    // Find All User for SPV
+    // Find All User for Planner
+
+    async findAllUserAdmin(parent, _, { db }) {
       if (db.payload.result.role === "admin") {
-        const data = await db.user.findAll();
-        // const data = db.payload
-        // console.log(data.result.role);
-        return data;
+        return await db.user.findAll();
       } else {
         throw new Error("Admin only");
       }
     },
+
+    async findAllUserSpv(parent, _, { db }) {
+      if (db.payload.result.role === "supervisor") {
+        return await db.user.findAll({
+          where: {
+            [Op.and]: [
+              { spv_id: db.payload.result.id },
+              { role: ["planner", "worker"] },
+            ],
+          },
+        });
+      } else {
+        throw new Error("You are not allowed to access this page");
+      }
+    },
+
+    async findAllUserPlanner(parent, _, { db }) {
+      if (db.payload.result.role === "planner") {
+        // console.log(db.payload.result.spv_id);
+        return await db.user.findAll({
+          where: {
+            [Op.and]: [
+              { spv_id: db.payload.result.spv_id },
+              { role: "worker" },
+            ],
+          },
+        });
+      } else {
+        throw new Error("You are not allowed to access this page");
+      }
+    },
+
     // Bisa di ganti atau di tambah find by email atau username
-    async findUser(parent, args, { db }) {
-      return await db.user.findOne({
-        where: {
-          id: args.id,
-        },
-      });
+    async findUserAdmin(parent, args, { db }) {
+      if (db.payload.result.role === "admin") {
+        return await db.user.findOne({
+          where: {
+            id: args.id,
+          },
+        });
+      } else {
+        throw new Error("admin only");
+      }
+    },
+
+    async findUserSpv(parent, args, { db }) {
+      if (db.payload.result.role === "supervisor") {
+        return await db.user.findOne({
+          where: {
+            [Op.and]: [
+              { spv_id: db.payload.result.id },
+              { role: ["planner", "worker"] },
+              { id: args.id },
+            ],
+          },
+        });
+      } else {
+        throw new Error("You are not allowed to access this page");
+      }
+    },
+
+    async findUserPlanner(parent, args, { db }) {
+      if (db.payload.result.role === "planner") {
+        return await db.user.findOne({
+          where: {
+            [Op.and]: [
+              { spv_id: db.payload.result.spv_id },
+              { role: "worker" },
+              { id: args.id },
+            ],
+          },
+        });
+      } else {
+        throw new Error("You are not allowed to access this page");
+      }
     },
   },
 
@@ -76,11 +145,11 @@ const resolvers = {
           });
           // return dataCreate;
           const dataBaru = await db.user.findOne({
-            where:{
-              id:args.id
-            }
-          })
-          return dataBaru
+            where: {
+              id: args.id,
+            },
+          });
+          return dataBaru;
         } else {
           throw new Error("Email or username already exists");
         }

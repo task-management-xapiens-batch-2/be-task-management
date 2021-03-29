@@ -12,7 +12,6 @@ class AuthController {
           email: req.body.email,
         },
       });
-        console.log(data)
       if (data) {
         const check = bcrypt.compareSync(req.body.password, data.password);
         // console.log(check);
@@ -24,6 +23,7 @@ class AuthController {
             email: data.email,
             photo: data.photo,
             role: data.role,
+            spv_id: data.spv_id
           };
           payload.token = generateJwt(payload);
           return baseResponse({
