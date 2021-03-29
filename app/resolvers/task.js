@@ -9,6 +9,9 @@ const resolvers = {
         return await db.task.findAll();
       } else if (db.payload.result.role === "supervisor") {
         return await db.task.findAll({
+          where: {
+            status: ["Submit", "Approved", "Return", "Reject"],
+          },
           include: [
             {
               model: db.user,
@@ -21,21 +24,24 @@ const resolvers = {
       }
     },
 
-    async findOneTaskSpv(parent,args,{db}){
+    async findOneTaskSpv(parent, args, { db }) {
       if (db.payload.result.role === "supervisor") {
         return await db.task.findOne({
+          where: {
+            status: ["Submit", "Approved", "Return", "Reject"],
+          },
           include: [
             {
               model: db.user,
               where: { spv_id: db.payload.result.id },
             },
             {
-              model:db.note
-            }
+              model: db.note,
+            },
           ],
-          where:{
-            id: args.id
-          }
+          where: {
+            id: args.id,
+          },
         });
       }
     },
@@ -172,7 +178,7 @@ const resolvers = {
         // console.log(dataTask.dataValues.id);
         const dataNote = await db.note.create({
           task_id: dataTask.dataValues.id,
-          note: args.note
+          note: args.note,
         });
         return await db.task.findOne({
           include: [
@@ -226,7 +232,7 @@ const resolvers = {
       }
     },
 
-    // Update Status Task Planner 
+    // Update Status Task Planner
     async updateStatusTaskPlanner(parent, args, { db }) {
       if (
         db.payload.result.role === "planner" ||

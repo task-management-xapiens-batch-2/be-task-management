@@ -120,38 +120,51 @@ const resolvers = {
         throw new Error("Admin only");
       }
     },
+
     async updateUser(parent, args, { db }) {
       if (db.payload.result.role === "admin") {
         const { salt, hash } = hashing(args.password);
-        const newData = {
-          fullname: args.fullname,
-          username: args.username,
-          email: args.email,
-          password: hash,
-          salt: salt,
-          role: args.role,
-          spv_id: args.spv_id,
-        };
         const data = await db.user.findAll({
           where: {
-            [Op.or]: [{ username: args.username }, { email: args.email }],
+            [Op.and]: [{ username: args.username }, { email: args.email }],
           },
         });
+        // console.log(data[0].dataValues.email === "planner@gmail.com");
+        // console.log(data[0].dataValues.username === "planner");
+        console.log(data[0] === undefined);
+        console.log(data);
         if (data[0] === undefined) {
-          const dataCreate = await db.user.update(newData, {
-            where: {
-              id: args.id,
-            },
-          });
-          // return dataCreate;
-          const dataBaru = await db.user.findOne({
-            where: {
-              id: args.id,
-            },
-          });
-          return dataBaru;
+          console.log("IFF BARUU");
+        }
+        if (data[0].dataValues.username === args.username && data[0].dataValues.email === args.email) {
+          console.log("INI TRUEEE");
+          const newData = {
+            fullname: args.fullname,
+            username: args.username,
+            email: args.email,
+            password: hash,
+            salt: salt,
+            role: args.role,
+            spv_id: args.spv_id,
+          };
+          console.log(newData)
+          // const dataCreate = await db.user.update(newData, {
+          //   where: {
+          //     id: args.id,
+          //   },
+          // });
+          // // return dataCreate;
+          // const dataBaru = await db.user.findOne({
+          //   where: {
+          //     id: args.id,
+          //   },
+          // });
+          // return dataBaru;
         } else {
-          throw new Error("Email or username already exists");
+          throw new Error("Email or username already");
+          // console.log("ini bagian else");
+          // console.log(data[0] !== undefined);
+          // console.log(data[0].dataValues);
         }
       } else {
         throw new Error("Admin Only");

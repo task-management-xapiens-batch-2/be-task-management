@@ -1,6 +1,7 @@
 const express = require("express");
 const port = process.env.PORT || 3000;
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer,AuthenticationError } = require("apollo-server-express");
+const cors = require("cors");
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
 const { router: routerIndex } = require("./routes/index");
@@ -10,13 +11,16 @@ const app = express();
 const router = express.Router();
 
 app.use(express.json());
+app.use(cors());
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
     const auth = req.headers.authorization;
+    if (!auth) throw new AuthenticationError('you must be logged in');
     const result = verifyJwt(auth);
+
     // console.log(result)
     db.payload = {
       result: result,
