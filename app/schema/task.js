@@ -72,7 +72,7 @@ const typeDefs = gql`
     updateStatusTaskPlanner(id: Int, status: String): Task
     updateStatusTaskWorker(id: Int, status: String): Task
 
-    updateIsRead(id: Int, is_read: String): Task
+    updateIsRead(id: Int): Task
     deleteTask(id: Int): Task
   }
 `;
