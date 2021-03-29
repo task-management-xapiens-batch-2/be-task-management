@@ -70,7 +70,7 @@ const resolvers = {
     async findAllTaskWorker(parent, _, { db }) {
       if (db.payload.result.role === "admin") {
         return await db.task.findAll();
-      } else if (db.payload.result.role === "planner") {
+      } else if (db.payload.result.role === "worker") {
         return await db.task.findAll({
           where: {
             assignee: db.payload.result.id,
