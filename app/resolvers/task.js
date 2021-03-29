@@ -285,7 +285,7 @@ const resolvers = {
             assignee: db.payload.result.id,
           },
         });
-        if (finddata[0] !== undefined) {
+        if (findData[0] !== undefined) {
           const newData = {
             status: args.status,
           };
