@@ -1,10 +1,14 @@
 const resolvers = {
   Query: {
     async findAllproject(parent, _, { db }) {
-      if (db.payload.result.role === "admin") {
-        return await db.project.findAll();
-      } else {
-        throw new Error("Access Denied");
+      try {
+        if (db.payload.result.role === "admin") {
+          return await db.project.findAll();
+        } else {
+          throw new Error("Access Denied");
+        }  
+      } catch (error) {
+        throw new Error(error)
       }
     },
     async projectByUserId(parent, args, { db }) {

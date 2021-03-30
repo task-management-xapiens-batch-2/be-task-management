@@ -1,5 +1,6 @@
 // const { argsToArgsConfig } = require("graphql/type/definition");
 // const { sumBy } = require("lodash");
+const main = require("./../common/helpers/mail");
 
 const resolvers = {
   Query: {
@@ -19,8 +20,8 @@ const resolvers = {
                 where: { spv_id: db.payload.result.id },
               },
               {
-                model: db.note
-              }
+                model: db.note,
+              },
             ],
           });
         } else {
@@ -68,18 +69,18 @@ const resolvers = {
         if (db.payload.result.role === "admin") {
           return await db.task.findAll();
         } else if (db.payload.result.role === "planner") {
-          let data =  await db.task.findAll({
+          let data = await db.task.findAll({
             include: [
               {
                 model: db.project,
                 where: { created_by: db.payload.result.id },
               },
               {
-                model: db.note
-              }
+                model: db.note,
+              },
             ],
           });
-          return data
+          return data;
         } else {
           throw new Error("you are not allowed");
         }
@@ -221,17 +222,29 @@ const resolvers = {
             task_id: dataTask.dataValues.id,
             note: args.note,
           });
-          return await db.task.findOne({
+          const dataEmail = await db.task.findOne({
             include: [
               {
-                model: db.user,
-                where: { spv_id: db.payload.result.id },
+                model: db.project,
+                include: [
+                  {
+                    model: db.user,
+                  },
+                ],
               },
             ],
             where: {
               id: args.id,
             },
           });
+          main(
+            dataEmail.project.user.email,
+            db.payload.result.email,
+            dataEmail.title,
+            dataEmail.description,
+            args.status,
+            args.note
+          );
         } else {
           throw new Error("you are not allowed");
         }
@@ -261,17 +274,30 @@ const resolvers = {
               id: args.id,
             },
           });
-          return await db.task.findOne({
+
+          const dataEmail = await db.task.findOne({
             include: [
               {
-                model: db.user,
-                where: { spv_id: db.payload.result.id },
+                model: db.project,
+                include: [
+                  {
+                    model: db.user,
+                  },
+                ],
               },
             ],
             where: {
               id: args.id,
             },
           });
+          main(
+            dataEmail.project.user.email,
+            db.payload.result.email,
+            dataEmail.title,
+            dataEmail.description,
+            dataEmail.status
+          );
+          // console.log(dataEmail.title);
         } else {
           throw new Error("you are not allowed");
         }
@@ -370,7 +396,25 @@ const resolvers = {
           db.payload.result.role === "admin" ||
           db.payload.result.role === "planner"
         ) {
-          const data = await db.task.create({
+          let data = await db.user.findOne({
+            include: [
+              {
+                model: db.task,
+                where: { assignee: args.assignee },
+              },
+            ],
+          });
+          // return data;
+          // console.log(data.dataValues.spv_id);
+          let dataEmail = await db.user.findOne({
+            where: {
+              id: data.dataValues.spv_id,
+            },
+          });
+          // console.log(dataEmail);
+          // console.log(dataEmail.dataValues.email);
+
+          const dataInsert = await db.task.create({
             project_id: args.project_id,
             assignee: args.assignee,
             title: args.title,
@@ -381,12 +425,18 @@ const resolvers = {
             status: "Submit",
             is_read: false,
           });
-          return data;
+          main(
+            dataEmail.dataValues.email,
+            db.payload.result.email,
+            args.title,
+            args.description
+          );
+          return dataInsert;
         } else {
           throw new Error("you are not allowed");
         }
       } catch (error) {
-        throw new Error("you are not allowed");
+        throw new Error(error);
       }
     },
 
