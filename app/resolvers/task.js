@@ -18,6 +18,9 @@ const resolvers = {
                 model: db.user,
                 where: { spv_id: db.payload.result.id },
               },
+              {
+                model: db.note
+              }
             ],
           });
         } else {
@@ -65,7 +68,7 @@ const resolvers = {
         if (db.payload.result.role === "admin") {
           return await db.task.findAll();
         } else if (db.payload.result.role === "planner") {
-          return await db.task.findAll({
+          let data =  await db.task.findAll({
             include: [
               {
                 model: db.project,
@@ -73,6 +76,7 @@ const resolvers = {
               },
             ],
           });
+          return data
         } else {
           throw new Error("you are not allowed");
         }

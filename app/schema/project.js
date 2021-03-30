@@ -11,7 +11,7 @@ const typeDefs = gql`
     created_by: Int
     title: String
     description: String
-    is_complete: String
+    is_complete: Boolean
   }
 
   extend type Mutation {

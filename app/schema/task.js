@@ -22,8 +22,8 @@ const typeDefs = gql`
     due_date: String
     attachment: String
     status: String
-    is_read: String
-    note: [Note]
+    is_read: Boolean
+    notes: [Note]
   }
 
   extend type Mutation {

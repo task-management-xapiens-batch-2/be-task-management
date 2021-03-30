@@ -6,7 +6,11 @@ var cors_proxy = require("cors-anywhere");
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
 const { router: routerIndex } = require("./routes/index");
-const { verifyJwt } = require("./common/middleware/auth");
+const {
+  verifyJwt,
+  verifyJwtRest,
+  permit,
+} = require("./common/middleware/auth");
 const cloudinary = require("./common/helpers/cloudinary");
 const { uploadAttachment } = require("./common/helpers/multer");
 const db = require("./db/models");
@@ -50,6 +54,7 @@ app.get("/", async (req, res) => {
 
 app.patch(
   "/upload/attachment/:id",
+  [verifyJwtRest, permit("worker")],
   uploadAttachment.single("file"),
   async (req, res) => {
     try {
