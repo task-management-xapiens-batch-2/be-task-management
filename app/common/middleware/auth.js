@@ -25,11 +25,11 @@ const verifyJwtRest = (req, res, next) => {
     const auth = req.headers.authorization;
     if (auth) {
       const token = auth.split(" ")[1];
-      const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      const payload = jwt.verify(token, process.env.HEROKU_JWT_SECRET_KEY);
       req.user = { ...payload };
       next();
     } else {
-      res.json("need token");
+      res.json({message:"Need Token"});
     }
   } catch (error) {
     res.status(500);

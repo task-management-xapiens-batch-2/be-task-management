@@ -74,6 +74,9 @@ const resolvers = {
                 model: db.project,
                 where: { created_by: db.payload.result.id },
               },
+              {
+                model: db.note
+              }
             ],
           });
           return data
