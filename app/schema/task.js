@@ -79,3 +79,5 @@ const typeDefs = gql`
 module.exports = {
   typeDefs,
 };
+
+// PGSSLMODE=no-verify
